@@ -8,6 +8,7 @@ def app():
         "TESTING": True,
         "DEBUG": True,
         "SERVER_NAME": 'app',
+        "DOC_URL": "http://localhost:5003",
     })
 
     yield app
