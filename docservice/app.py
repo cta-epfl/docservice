@@ -146,7 +146,7 @@ def oauth_callback():
 
 
 @app.route(url_prefix, defaults={'path': ''})
-@app.route(url_prefix + '<path:path>')
+@app.route(url_prefix + '/<path:path>')
 @authenticated
 def default(user, path):
     default_chunk_size = 10 * 1024 * 1024
