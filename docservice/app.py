@@ -69,6 +69,8 @@ def create_app():
 
     app.config['DOC_URL'] = \
         os.getenv('DOC_URL', 'http://lst-doc:80').strip('/')
+    app.config['CTADS_DISABLE_ALL_AUTH'] = \
+        os.getenv('CTADS_DISABLE_ALL_AUTH', 'False') == 'True'
 
     return app
 
