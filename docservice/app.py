@@ -177,6 +177,5 @@ def default(user, path):
         (k, v) for k, v in res.raw.headers.items()
         if k.lower() not in excluded_headers
     ]
-    # endregion exlcude some keys in :res response
 
     return Response(res.content, res.status_code, headers)
