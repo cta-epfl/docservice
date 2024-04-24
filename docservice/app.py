@@ -145,7 +145,7 @@ def oauth_callback():
     return make_response(redirect(next_url))
 
 
-@app.route(url_prefix, defaults={'path': ''})
+@app.route(url_prefix + '/', defaults={'path': ''})
 @app.route(url_prefix + '/<path:path>')
 @authenticated
 def default(user, path):
@@ -154,16 +154,6 @@ def default(user, path):
     def request_datastream():
         while (buf := request.stream.read(default_chunk_size)) != b'':
             yield buf
-
-    res = requests.request(
-        method=request.method,
-        url=app.config['DOC_URL']+'/'+path,
-        # exclude 'host' header
-        headers={k: v for k, v in request.headers if k.lower() != 'host'},
-        data=request_datastream(),
-        cookies=request.cookies,
-        allow_redirects=False,
-    )
 
     # Exclude all "hop-by-hop headers" defined by RFC 2616
     # section 13.5.1 ref. https://www.rfc-editor.org/rfc/rfc2616#section-13.5.1
@@ -176,5 +166,16 @@ def default(user, path):
         if k.lower() not in excluded_headers
     ]
     # endregion exlcude some keys in :res response
+
+    res = requests.request(
+        method=request.method,
+        url=app.config['DOC_URL']+'/'+path,
+        headers={k: v for k, v in request.headers
+                 if k.lower() not in ['host', 'authorization'] and
+                 k.lower() not in excluded_headers},
+        data=request_datastream(),
+        cookies=request.cookies,
+        allow_redirects=False,
+    )
 
     return Response(res.content, res.status_code, headers)
