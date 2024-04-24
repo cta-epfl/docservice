@@ -161,11 +161,6 @@ def default(user, path):
                         'transfer-encoding', 'connection', 'keep-alive',
                         'proxy-authenticate', 'proxy-authorization', 'te',
                         'trailers', 'upgrade']
-    headers = [
-        (k, v) for k, v in res.raw.headers.items()
-        if k.lower() not in excluded_headers
-    ]
-    # endregion exlcude some keys in :res response
 
     res = requests.request(
         method=request.method,
@@ -177,5 +172,11 @@ def default(user, path):
         cookies=request.cookies,
         allow_redirects=False,
     )
+
+    headers = [
+        (k, v) for k, v in res.raw.headers.items()
+        if k.lower() not in excluded_headers
+    ]
+    # endregion exlcude some keys in :res response
 
     return Response(res.content, res.status_code, headers)
